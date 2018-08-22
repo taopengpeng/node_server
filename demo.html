@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .btn1 {
+            margin: 15px 0px 10px 10px;
+        }
+        .add {
+            margin-left: 10px;
+        }
+        .add input {
+            width: 120px;
+            margin-right: 10px;
+        }
+        table {
+            margin-top: 15px;
+            margin-left: 10px;
+            border: 1px solid #e7e7e7;
+            border-collapse: collapse;
+        }
+        table td {
+            min-width: 145px;
+            height: 25px;
+            text-align: center;
+        }
+
+        table th {
+            min-width: 145px;
+            height: 35px;
+            text-align: center;
+            background-color: #F1F1F1;
+        }
+        button {
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .updata {
+            display: none;
+            margin-top: 15px;
+            margin-left: 10px;
+        }
+
+        .updata input{
+            width: 120px;
+            margin-right: 10px;
+        }
+        p {
+            margin-top: 15px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn1" onclick="getData()">查询列表</button>
+    <div class="add">
+        <input id="name" placeholder="请输入姓名" />
+        <input id="sex" placeholder="请输入性别" />
+        <input id="age" placeholder="请输入年龄" />
+        <button onclick="setData()">新增</button>
+    </div>
+    <table cellspacing="0" border="1">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>年龄</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="rows">
+        </tbody>
+    </table>
+    <div class="updata">
+        <input name="name" placeholder="请输入姓名" />
+        <input name="sex" placeholder="请输入性别" />
+        <input name="age" placeholder="请输入年龄" />
+        <input name="id" hidden />
+        <button onclick="upData()">修改</button>
+    </div>
+    <p id="detail"></p>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            getData()
+        });
+        var list = []
+        function upData(item) {
+            var obj = {
+                name: $("input[name='name']").val(),
+                age: $("input[name='age']").val(),
+                sex: $("input[name='sex']").val(),
+                Id: $("input[name='id']").val()
+            }
+            $.post("http://localhost:3000/upData",obj,function(result){
+
+                getData();
+            });
+        }
+        function upClick(id) {
+            list.forEach(function (v,i) {
+                if (v.Id == id) {
+                    $("input[name='name']").val(v.name)
+                    $("input[name='age']").val(v.age)
+                    $("input[name='sex']").val(v.sex)
+                    $("input[name='id']").val(v.Id)
+
+                    $('.updata').css({
+                        display: 'block'
+                    })
+                }
+            })
+        }
+        function getDetail(id) {
+            $.get("http://localhost:3000/getDetail",{id: id},function(result){
+                $('#detail').html(JSON.stringify(result))
+            });
+        }
+        function delData(id) {
+            $.post("http://localhost:3000/delData",{id: id},function(result){
+                $('.updata').css({
+                    display: 'none'
+                })
+                $('#detail').html('')
+                getData();
+            });
+        }
+        function setData() {
+            var data = {
+                name: $('#name').val(),
+                sex: $('#sex').val(),
+                age: $('#age').val(),
+            }
+            $.post("http://localhost:3000/setData",data,function(result){
+
+                getData();
+            });
+        }
+        function getData() {
+            $.get("http://localhost:3000/getData",{},function(result){
+
+                var str = ''
+                for(var i=0;i<result.length;i++) {
+                    var item = result[i];
+                    str += `<tr><td>${item.name}</td><td>${item.sex == 1 ? "男":"女"}</td><td>${item.age}</td><td><button onclick="delData(${item.Id})">删除</button><button onclick="upClick(${item.Id})">修改</button><button onclick="getDetail(${item.Id})">查看详情</button></td></tr>`
+                }
+                list = result;
+                $('#rows').html(str)
+                $('.updata').css({
+                    display: 'none'
+                })
+                $('#detail').html('')
+            });
+        }
+    </script>
+</body>
+</html>
