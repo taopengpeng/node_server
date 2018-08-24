@@ -31,7 +31,7 @@ app.all('*', function(req, res, next) {
 app.use(function(req, res, next) {
 	// 除/login之外的都拦截
 	if (req.url == '/login') {
-		next()
+		next() 
 	} else {
 		//判断有没有登陆失效
 		if (req.session && req.session.user) {
