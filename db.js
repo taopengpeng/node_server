@@ -3,7 +3,7 @@ let mysql = require('mysql');
 let db = {};
 db.query = (sql,fn)=> {
     let connection = mysql.createConnection({
-        host: '116.62.20.192',
+        host: '127.0.0.1',
         user: 'root',
         password: 'root',
         port: '3306',

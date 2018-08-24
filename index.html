@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<body>
+	<div>
+		<span>用户名：</span><input name="user" placeholder="请输入姓名" /> <br />
+		<span>密&nbsp;&nbsp;&nbsp;码：</span></span><input name="password" type="password" placeholder="请输入密码" />
+	</div>
+	<div>
+		<button onclick="submit()">登陆</button>
+		<button onclick="getData()">验证</button>
+	</div>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		// $(document).ready(function(){
+		// 	getData()
+		// });
+		var list = []
+		
+		function submit() {
+			var obj = {
+				user: $("input[name='user']").val(),
+				password: $("input[name='password']").val(),
+			}
+			console.log(obj)
+			// $.post("http://localhost:3000/login",obj,{ xhrFields: {  withCredentials: true  }},function(result){
+			// 	console.log(result)
+			// });
+
+			$.ajax({
+				type: "POST",
+				url: "http://localhost:3000/login",
+				dataType: 'json',
+				// 允许携带证书
+				xhrFields: {
+					withCredentials: true
+				},
+				data: obj,
+				// 允许跨域
+				crossDomain: true,
+				success:function(){
+				},
+				error:function(){
+				}
+			})
+		}
+
+		function getData() {
+			// $.get("http://localhost:3000/getData",{},{ xhrFields: {  withCredentials: true  }},function(result){
+			//
+			// })
+
+			$.ajax({
+				type: "GET",
+				url: "http://localhost:3000/getData",
+				dataType: 'json',
+				// 允许携带证书
+				xhrFields: {
+					withCredentials: true
+				},
+				data: {},
+				// 允许跨域
+				crossDomain: true,
+				success:function(){
+				},
+				error:function(){
+				}
+			})
+		}
+		
+	</script>
+</body>
+</html>
